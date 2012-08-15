@@ -33,7 +33,26 @@ class HandlerRef[T](callValue: => T, handlerDef: play.core.Router.HandlerDef)(im
 
 }
 
-trait EssentialAction extends (RequestHeader => Iteratee[Array[Byte],Result]) with Handler
+trait EssentialAction extends (RequestHeader => Iteratee[Array[Byte],Result]) with Handler {
+
+  /**
+   * Returns itself, for better support in the routes file.
+   *
+   * @return itself
+   */
+  def apply() = this
+
+}
+
+object EssentialAction {
+
+  def apply(f:RequestHeader => Iteratee[Array[Byte],Result]):EssentialAction = new EssentialAction {
+
+    def apply(rh:RequestHeader) = f(rh)
+
+  }
+}
+
 
 /**
  * An action is essentially a (Request[A] => Result) function that
@@ -93,7 +112,9 @@ trait Action[A] extends EssentialAction {
    *
    * @return itself
    */
-  def apply() = this
+  override def apply(): Action[A] = this
+
+
 
   override def toString = {
     "Action(parser=" + parser + ")"

@@ -253,13 +253,34 @@ object PurePromise {
  */
 object Promise {
 
+  private var underlyingSystem: Option[ActorSystem] = Some(ActorSystem("promise"))
+
   private[concurrent] def invoke[T](t: => T): Promise[T] = akka.dispatch.Future { t }(Promise.system.dispatcher).asPromise
   
   private [concurrent] lazy val defaultTimeout = 
     Duration(system.settings.config.getMilliseconds("promise.akka.actor.typed.timeout"), TimeUnit.MILLISECONDS).toMillis 
+    
+  /**
+   * actor system for Promises  
+   */
+  private [concurrent] def system = underlyingSystem.getOrElse{
+    val a = ActorSystem("promise")
+    underlyingSystem = Some(a)
+    a
+  }
 
-  private [concurrent] lazy val system = ActorSystem("promise")
-  
+  /**
+   * resets the underlying promise Actor System and clears Java actor references 
+   */
+  def resetSystem(): Unit = {
+    underlyingSystem.filter(_.isTerminated == false).map{s =>
+      s.shutdown()
+      s.awaitTermination()
+      }.getOrElse(play.api.Logger.debug("trying to reset Promise actor system that was not started yet"))
+    play.libs.F.Promise.resetActors()
+    underlyingSystem = None
+  }
+
   /**
    * Synonym for PurePromise.apply
    */
@@ -339,7 +360,7 @@ object Promise {
   */
   def sequenceEither1[A, B](e: Either[Promise[A], Promise[B]]): Promise[Either[A, B]] = e.fold(_.map(Left(_)), _.map(Right(_)))
   
-  @deprecated("use sequence instead")
+  @deprecated("use sequence instead","2.1")
   def sequenceOption[A](o: Option[Promise[A]]): Promise[Option[A]] = o.map(_.map(Some(_))).getOrElse(Promise.pure(None))
 
 }
