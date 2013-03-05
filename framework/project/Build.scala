@@ -354,7 +354,7 @@ object PlayBuild extends Build {
         val buildWithDoc      = Option(System.getProperty("generate.doc")).isDefined
         val previousVersion   = "2.0.3"
         val previousScalaVersion = "2.9.1"
-        val buildScalaVersion = "2.9.3-RC1"
+        val buildScalaVersion = "2.9.3"
         val buildScalaVersionForSbt = "2.9.2"
         val buildSbtVersion   = "0.12.2"
         val buildSbtMajorVersion = "0.12"
@@ -485,7 +485,7 @@ object PlayBuild extends Build {
             "com.typesafe.akka"                 %    "akka-actor"               %   "2.0.5",
             "com.typesafe.akka"                 %    "akka-slf4j"               %   "2.0.5",
 
-            "org.scala-stm"                     %%   "scala-stm"                %   "0.6",
+            "org.scala-stm"                     %%   "scala-stm"                %   "0.7",
 
             "joda-time"                         %    "joda-time"                %   "2.1",
             "org.joda"                          %    "joda-convert"             %   "1.2",
@@ -572,7 +572,7 @@ object PlayBuild extends Build {
         )
 
         val iterateesDependencies = Seq(
-            "org.scala-stm"                     %%   "scala-stm"                %   "0.6",
+            "org.scala-stm"                     %%   "scala-stm"                %   "0.7",
             "com.typesafe"                      %    "config"                   %   "1.0.0",
             scalaIoFileBuild,
             specsBuild % "test"
