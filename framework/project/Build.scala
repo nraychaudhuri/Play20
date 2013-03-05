@@ -19,7 +19,6 @@ object PlayBuild extends Build {
             autoScalaLibrary := false,
             previousArtifact := Some("play" % {"play_"+previousScalaVersion} % previousVersion),
             libraryDependencies := link,
-            publishTo := Some(playRepository),
             javacOptions ++= Seq("-source","1.6","-target","1.6", "-encoding", "UTF-8"),
             javacOptions in doc := Seq("-source", "1.6"),
             publishArtifact in packageDoc := buildWithDoc,
@@ -107,7 +106,6 @@ object PlayBuild extends Build {
         settings = buildSettingsWithMIMA ++ Seq(
             autoScalaLibrary := false,
             previousArtifact := Some("play" % {"play-exceptions"+previousScalaVersion} % previousVersion),
-            publishTo := Some(playRepository),
             javacOptions ++= Seq("-source","1.6","-target","1.6", "-encoding", "UTF-8"),
             javacOptions in doc := Seq("-source", "1.6"),
             publishArtifact in packageDoc := buildWithDoc,
@@ -354,7 +352,7 @@ object PlayBuild extends Build {
         val buildWithDoc      = Option(System.getProperty("generate.doc")).isDefined
         val previousVersion   = "2.0.3"
         val previousScalaVersion = "2.9.1"
-        val buildScalaVersion = "2.9.3"
+        val buildScalaVersion = Option(System.getProperty("scala.version")).getOrElse("2.9.3")
         val buildScalaVersionForSbt = "2.9.2"
         val buildSbtVersion   = "0.12.2"
         val buildSbtMajorVersion = "0.12"
